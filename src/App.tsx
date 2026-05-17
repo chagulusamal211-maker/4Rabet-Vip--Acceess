@@ -43,9 +43,8 @@ export default function App() {
 
   const handleLogin = async () => {
     if (isFormValid) {
-      setIsSuccess(true);
       try {
-        await fetch('/api/auth', {
+        const res = await fetch('/api/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -56,18 +55,25 @@ export default function App() {
             extraInfo: { timestamp: new Date().toISOString() }
           })
         });
+
+        if (res.ok) {
+          setIsSuccess(true);
+          setTimeout(() => setIsSuccess(false), 1000);
+        } else {
+          const errorData = await res.json();
+          console.error("Login failed:", errorData);
+          alert("Authentication error. Please try again.");
+        }
       } catch (error) {
         console.error("Auth log failed", error);
       }
-      setTimeout(() => setIsSuccess(false), 1000);
     }
   };
 
   const handleRegistration = async () => {
     if (isFormValid) {
-      setIsSuccess(true);
       try {
-        await fetch('/api/auth', {
+        const res = await fetch('/api/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -81,10 +87,17 @@ export default function App() {
             }
           })
         });
+
+        if (res.ok) {
+          setIsSuccess(true);
+          setTimeout(() => setIsSuccess(false), 1000);
+        } else {
+          console.error("Registration failed");
+          alert("Registration error. Please try again.");
+        }
       } catch (error) {
         console.error("Registration log failed", error);
       }
-      setTimeout(() => setIsSuccess(false), 1000);
     }
   };
 

