@@ -1,0 +1,6 @@
+{
+  "name": "4rabet Login & Registration",
+  "description": "A dark-themed login and registration interface based on 4rabet design, featuring phone validation and adaptive UI states.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
